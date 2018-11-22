@@ -40,8 +40,8 @@ class Dog
     self
   end
 
-  def self.create(attributes)
-    dog=Dog.new(attributes)
+  def self.create(name:, breed:)
+    dog=Dog.new(name: name, breed: breed)
     dog.save
     dog
   end
@@ -61,8 +61,9 @@ class Dog
       WHERE name = ? AND breed = ?
     SQL
     dog = DB[:conn].execute(sql, name, breed).first
-    if dog
-      new_dog = self.new_from_db(dog)
+    if !dog.empty?
+      dog_data=dog[0]
+      dog = Dog.new(id: dog_data[0], name: dog_data[1], breed: dog_data[2])
     else
       new_dog = self.create(:name=> name, :breed=>breed)
     end
